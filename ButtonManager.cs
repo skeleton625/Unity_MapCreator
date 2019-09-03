@@ -12,6 +12,7 @@ public class ButtonManager : MonoBehaviour
     [SerializeField]
     private GameObject stoneButtonObject;
 
+
     /* 메인 버튼에서 특정 버튼을 누를 때의 함수 */
     public void mainButtonClick()
     {
@@ -34,8 +35,8 @@ public class ButtonManager : MonoBehaviour
     /* 오브젝트 관련 버튼을 누를 때의 함수 */
     public void objectsButtonClick()
     {
-        string objectName = transform.name.Split('_')[1];
-        Debug.Log(objectName);
+        string[] objectDatas = transform.name.Split('_');
+        MapObject.generateObject(objectDatas[0], objectDatas[1]);
     }
 
     /* 뒤로가기 버튼을 누를 때의 함수 */

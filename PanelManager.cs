@@ -9,11 +9,13 @@ public class PanelManager : MonoBehaviour
     [SerializeField]
     private GameObject mainButton;
     [SerializeField]
-    private int createPosX;
-    [SerializeField]
-    private Vector3 movedPos;
+    private GameObject movedPos;
     private Vector3 originPos;
     private Vector3 applyPos;
+    [SerializeField]
+    private float createPosX;
+    [SerializeField]
+    private float removePosX;
 
     private bool activateMainBar;
 
@@ -36,10 +38,10 @@ public class PanelManager : MonoBehaviour
         {
             activateMainBar = true;
             mainButton.SetActive(activateMainBar);
-            applyPos = movedPos;
+            applyPos = movedPos.transform.localPosition;
             StopAllCoroutines();
             StartCoroutine(cameraMovingCoroutine());
-        } else if(activateMainBar && Input.mousePosition.x > createPosX)
+        } else if(activateMainBar && Input.mousePosition.x > removePosX)
         {
             activateMainBar = false;
             mainButton.SetActive(activateMainBar);
