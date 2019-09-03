@@ -24,7 +24,6 @@ public class ButtonManager : MonoBehaviour
                 break;
             case "Water":
                 mainButtonObject.SetActive(true);
-                Debug.Log("WATER");
                 break;
             case "Stone":
                 stoneButtonObject.SetActive(true);
