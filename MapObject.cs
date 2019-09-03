@@ -4,25 +4,43 @@ using UnityEngine;
 
 public class MapObject : MonoBehaviour
 {
+    /* 돌 오브젝트 프리팹 */
     [SerializeField]
     private GameObject[] Stones;
+    /* 나무 오브젝트 프리팹 */
     [SerializeField]
     private GameObject[] Trees;
+    /* 선택 블록 오브젝트 */
     [SerializeField]
     private GameObject settingBlock;
-    [SerializeField]
-    private int blockCount;
+    /* 비선택 표시 */
     [SerializeField]
     private Material unSelected;
+    /* 선택 표시 */
     [SerializeField]
-    private Material Selected;
+    private Material Possible;
+    [SerializeField]
+    private Material imPossible;
+    /* 선택 블록 한 행 개수 */
+    [SerializeField]
+    private int blockCount;
+    /* 선택된 오브젝트 회전 속도 */
+    [SerializeField]
+    private float rotSpeed;
+
     /* 오브젝트 데이터들 */
     public static Dictionary<string, GameObject> treeDictionary;
     public static Dictionary<string, GameObject> stoneDictionary;
+
+    /* 맵 제작 실행 여부 */
     private static bool isCrafting;
+    /* 선택된 오브젝트 */
     private static GameObject selectedObject;
+    /* 이전에 선택된 블록, 선택된 블록 */
     private GameObject preSelectedBlock, curSelectedBlock;
+    /* Raycast Hit 정보 */
     private RaycastHit hitInfo;
+    private bool[,] isSelected;
 
     /* 사용할 오브젝트들을 메모리에 저장해 둠 */
     void Start()
@@ -56,8 +74,6 @@ public class MapObject : MonoBehaviour
     /* 오브젝트의 생성을 시작할 수 있도록 생성할 오브젝트 정의 함수 */
     public static void generateObject(string _type, string _objectName)
     {
-        /* */
-        //if(selectedObject != null)
         selectedObject.SetActive(false);
         switch (_type)
         {
@@ -80,25 +96,40 @@ public class MapObject : MonoBehaviour
         
         if (isCrafting)
         {
+            string[] selectedNum;
             /* 마우스가 위치한 선택 블록 표시 */
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), 
                 out hitInfo))
             {
                 curSelectedBlock = hitInfo.transform.gameObject;
+                selectedNum = curSelectedBlock.name.Split('_');
                 preSelectedBlock.GetComponent<MeshRenderer>().material = unSelected;
-                curSelectedBlock.GetComponent<MeshRenderer>().material = Selected;
+                if(isSelected[int.Parse(selectedNum[0]), int.Parse(selectedNum[1])])
+                    curSelectedBlock.GetComponent<MeshRenderer>().material = imPossible;
+                else
+                    curSelectedBlock.GetComponent<MeshRenderer>().material = Possible;
                 preSelectedBlock = curSelectedBlock;
             }
+            /* R 키를 누를 경우, 선택한 오브젝트 회전 */
+            if(Input.GetKey(KeyCode.R))
+                selectedObject.transform.RotateAround(selectedObject.transform.position, Vector3.up, rotSpeed * Time.deltaTime);
             /* 왼쪽 마우스 버튼으로 선택한 오브젝트를 생성 */
             if (Input.GetMouseButtonDown(0))
             {
-                Instantiate(selectedObject, curSelectedBlock.transform.position, Quaternion.identity);
-                isCrafting = false;
-                curSelectedBlock.GetComponent<MeshRenderer>().material = unSelected;
+                selectedNum = curSelectedBlock.name.Split('_');
+                if (!isSelected[int.Parse(selectedNum[0]), int.Parse(selectedNum[1])])
+                {
+                    isSelected[int.Parse(selectedNum[0]), int.Parse(selectedNum[1])] = true;
+                    Instantiate(selectedObject, curSelectedBlock.transform.position, selectedObject.transform.rotation);
+                    curSelectedBlock.GetComponent<MeshRenderer>().material = unSelected;
+                }
+                else
+                    Debug.Log("이미 생성되어 있는 자리");
             }
-            else if (Input.GetMouseButtonDown(1))
+            /* 오브젝트 생성 종료 */
+            else if (Input.GetMouseButton(1))
             {
-
+                isCrafting = false;
             }
         }
     }
@@ -106,12 +137,15 @@ public class MapObject : MonoBehaviour
     /* 선택 블록 초기화 함수 */
     private void generateSettingBlock()
     {
+        isSelected = new bool[blockCount, blockCount];
+
         for(int i = 0; i < blockCount; i++)
         {
             for(int j = 0; j < blockCount; j++)
             {
                 Vector3 createPos = new Vector3(i * 4, 0, j * 4);
-                Instantiate(settingBlock, createPos, Quaternion.identity);
+                GameObject clone = Instantiate(settingBlock, createPos, Quaternion.identity);
+                clone.name = i.ToString() + '_' + j.ToString();
             }
         }
     }
