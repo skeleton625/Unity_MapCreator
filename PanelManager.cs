@@ -36,7 +36,7 @@ public class PanelManager : MonoBehaviour
     {
         if (!activateMainBar && Input.mousePosition.x <= createPosX)
         {
-            MapObject.isPanelOn = true;
+            MapManager.isPanelOn = true;
             activateMainBar = true;
             mainButton.SetActive(activateMainBar);
             applyPos = movedPos.transform.localPosition;
@@ -44,7 +44,7 @@ public class PanelManager : MonoBehaviour
             StartCoroutine(cameraMovingCoroutine());
         } else if(activateMainBar && Input.mousePosition.x > removePosX)
         {
-            MapObject.isPanelOn = false;
+            MapManager.isPanelOn = false;
             activateMainBar = false;
             mainButton.SetActive(activateMainBar);
             applyPos = originPos;

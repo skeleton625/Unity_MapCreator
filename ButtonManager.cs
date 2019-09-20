@@ -35,7 +35,7 @@ public class ButtonManager : MonoBehaviour
     public void objectsButtonClick()
     {
         string[] objectDatas = transform.name.Split('_');
-        MapObject.setObject(objectDatas[0], objectDatas[1]);
+        MapManager.selectObject(objectDatas[0], objectDatas[1]);
     }
 
     /* 뒤로가기 버튼을 누를 때의 함수 */
@@ -56,11 +56,16 @@ public class ButtonManager : MonoBehaviour
 
     public void writeTextData()
     {
-        MapObject.isWriteStart = true;
+        ObjectManager.writeText();
+    }
+
+    public void readTextData()
+    {
+        MapManager.readText();
     }
 
     public void resetMapButtonClick()
     {
-        MapObject.isReset = true;
+        MapManager.isReset = true;
     }
 }
