@@ -40,11 +40,13 @@ public class ObjectManager : MonoBehaviour
         for (int i = 0; i < Trees.Length; i++)
         {
             inputObject = Trees[i].name;
+            Debug.Log(inputObject);
             treeDictionary.Add(inputObject, Trees[i]);
         }
         for (int i = 0; i < Stones.Length; i++)
         {
             inputObject = Stones[i].name;
+            Debug.Log(inputObject);
             stoneDictionary.Add(inputObject, Stones[i]);
         }
         for(int i = 0; i < blockCount; i++)
@@ -56,6 +58,7 @@ public class ObjectManager : MonoBehaviour
 
     public static GameObject getTree(string name)
     {
+        Debug.Log(treeDictionary[name]);
         return treeDictionary[name];
     }
 
@@ -101,15 +104,9 @@ public class ObjectManager : MonoBehaviour
 
     public static bool deleteObject(int x, int y)
     {
-        if (createdObject[x, y] == null)
-            return false;
         /* 삭제 불가능 오브젝트 */
-        if (isSelected[x, y] == -1)
-        {
-            Debug.Log(x + "_" + y);
-            isSelected[x, y] = -2;
+        if (createdObject[x, y] == null || isSelected[x, y] == -1)
             return false;
-        }
 
         /* 삭제 가능한 오브젝트면서 비어있지 않을 경우 */
         if (createdObject[x, y] != null)
