@@ -19,13 +19,10 @@ public class CameraController : MonoBehaviour
         if(Input.GetKey(KeyCode.E))
         {
             transform.RotateAround(gameObject.transform.position, Vector3.up, rotSpeed * Time.deltaTime);
-            Debug.Log(Vector3.up);
         }
         if (Input.GetKey(KeyCode.Q))
         {
             transform.RotateAround(gameObject.transform.position, -Vector3.up, rotSpeed * Time.deltaTime);
-            Debug.Log(Vector3.up);
         }
-            
     }
 }
