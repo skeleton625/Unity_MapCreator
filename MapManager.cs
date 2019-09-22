@@ -189,6 +189,7 @@ public class MapManager : MonoBehaviour
                 {
                     theTerrain.terrainData = 
                         generateTerrain(theTerrain.terrainData, x * 4, z * 4, 4, 4, 4);
+                    ObjectManager.setSelectedObject(x, z, -2);
                 }
             }
         }
@@ -241,21 +242,36 @@ public class MapManager : MonoBehaviour
 
             for (int i = 0; i < terrainSize; i++)
             {
-                line_type = data_type.ReadLine().Split(',');
-                line_rot = data_rot.ReadLine().Split(',');
-                for (int j = 0; j < terrainSize; j++)
+                GameObject clone = null;
+                line_type = data_type.ReadLine().Replace(" ", "").Split(',');
+                line_rot = data_rot.ReadLine().Replace(" ", "").Split(',');
+                for (int j = 0; j < terrainSize-1; j++)
                 {
-                    if(line_type[j] == "-1")
+                    int types = int.Parse(line_type[j]);
+
+                    if (types == 0)
+                        continue;
+
+                    int x = i / 4, z = j / 4;
+                    ObjectManager.setSelectedObject(x, z, types);
+
+                    if (types == -1)
                     {
                         theTerrain.terrainData =
-                            generateTerrain(theTerrain.terrainData, i, j, 4, 4, 4);
+                           generateTerrain(theTerrain.terrainData, i, j, 4, 4, 0);
+                        continue;
                     }
-                    else
-                    {
+                    else if (types < 11)
+                        clone = Instantiate(ObjectManager.getTree(line_type[j]),
+                                        new Vector3(i+2, 4, j+2),
+                                        Quaternion.Euler(0, float.Parse(line_rot[j]), 0));
+                    else if(types < 14)
+                        clone = Instantiate(ObjectManager.getStone(line_type[j]),
+                                        new Vector3(i+2, 4, j+2),
+                                        Quaternion.Euler(0, float.Parse(line_rot[j]), 0));
 
-                    }
-                    Debug.Log("type : " + line_type[j]);
-                    Debug.Log("rot : " + line_rot[j]);
+                    clone.SetActive(true);
+                    ObjectManager.setObject(clone, x, z);
                 }
             }
         }
