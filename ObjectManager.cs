@@ -40,11 +40,13 @@ public class ObjectManager : MonoBehaviour
         for (int i = 0; i < Trees.Length; i++)
         {
             inputObject = Trees[i].name;
+            Debug.Log(inputObject);
             treeDictionary.Add(inputObject, Trees[i]);
         }
         for (int i = 0; i < Stones.Length; i++)
         {
             inputObject = Stones[i].name;
+            Debug.Log(inputObject);
             stoneDictionary.Add(inputObject, Stones[i]);
         }
         for(int i = 0; i < blockCount; i++)
@@ -56,6 +58,7 @@ public class ObjectManager : MonoBehaviour
 
     public static GameObject getTree(string name)
     {
+        Debug.Log(treeDictionary[name]);
         return treeDictionary[name];
     }
 
