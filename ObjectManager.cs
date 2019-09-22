@@ -50,7 +50,7 @@ public class ObjectManager : MonoBehaviour
         for(int i = 0; i < blockCount; i++)
         {
             for (int j = 0; j < blockCount; j++)
-                isSelected[i, j] = -2;
+                isSelected[i, j] = 0;
         }
     }
 
@@ -101,23 +101,16 @@ public class ObjectManager : MonoBehaviour
 
     public static bool deleteObject(int x, int y)
     {
-        if (createdObject[x, y] == null)
-            return false;
         /* 삭제 불가능 오브젝트 */
-        if (isSelected[x, y] == -1)
-        {
-            Debug.Log(x + "_" + y);
-            isSelected[x, y] = -2;
+        if (createdObject[x, y] == null || isSelected[x, y] == -1)
             return false;
-        }
 
         /* 삭제 가능한 오브젝트면서 비어있지 않을 경우 */
         if (createdObject[x, y] != null)
         {
             Destroy(createdObject[x, y]);
-            Debug.Log(x + "_" + y);
             createdObject[x, y] = null;
-            isSelected[x, y] = -2;
+            isSelected[x, y] = 0;
             return true;
         }
         /* 예기치 못한 경우 */
@@ -135,7 +128,7 @@ public class ObjectManager : MonoBehaviour
         {
             input_type = "";
             input_rot = "";
-            for (int j = 0; j < terrainSize - 1; j++)
+            for (int j = 0; j < terrainSize; j++)
             {
             if (i % 4 == 0 && j % 4 == 0)
             {
