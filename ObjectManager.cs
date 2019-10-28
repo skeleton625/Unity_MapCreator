@@ -40,13 +40,11 @@ public class ObjectManager : MonoBehaviour
         for (int i = 0; i < Trees.Length; i++)
         {
             inputObject = Trees[i].name;
-            Debug.Log(inputObject);
             treeDictionary.Add(inputObject, Trees[i]);
         }
         for (int i = 0; i < Stones.Length; i++)
         {
             inputObject = Stones[i].name;
-            Debug.Log(inputObject);
             stoneDictionary.Add(inputObject, Stones[i]);
         }
         for(int i = 0; i < blockCount; i++)
@@ -58,7 +56,6 @@ public class ObjectManager : MonoBehaviour
 
     public static GameObject getTree(string name)
     {
-        Debug.Log(treeDictionary[name]);
         return treeDictionary[name];
     }
 
@@ -97,11 +94,6 @@ public class ObjectManager : MonoBehaviour
         isSelected[x, y] = num;
     }
 
-    public static void generateObject(string type, int x, int y)
-    {
-
-    }
-
     public static bool deleteObject(int x, int y)
     {
         /* 삭제 불가능 오브젝트 */
@@ -122,8 +114,8 @@ public class ObjectManager : MonoBehaviour
 
     public static void writeText()
     {
-        StreamWriter dataType = new StreamWriter("map_data_type.txt", false);
-        StreamWriter data_rot = new StreamWriter("map_data_rot.txt", false);
+        StreamWriter dataType = new StreamWriter("map_data_type.csv", false);
+        StreamWriter data_rot = new StreamWriter("map_data_rot.csv", false);
         string input_type;
         string input_rot;
 
@@ -133,26 +125,26 @@ public class ObjectManager : MonoBehaviour
             input_rot = "";
             for (int j = 0; j < terrainSize; j++)
             {
-            if (i % 4 == 0 && j % 4 == 0)
-            {
-                int blockX = i / 4, blockZ = j / 4;
-                input_type += isSelected[blockX, blockZ];
-                if (isSelected[blockX, blockZ] > 0)
-                    input_rot += createdObject[blockX, blockZ].transform.rotation.y;
-                 else
-                    input_rot += "0";
-                 }
-                 else
-                 {
+                if (i % 4 == 0 && j % 4 == 0)
+                {
+                    int blockX = i / 4, blockZ = j / 4;
+                    input_type += isSelected[blockX, blockZ];
+                    if (isSelected[blockX, blockZ] > 0 && isSelected[blockX, blockZ] < 14)
+                        input_rot += createdObject[blockX, blockZ].transform.rotation.y;
+                    else
+                       input_rot += "0";
+                }
+                else
+                {
                     input_type += "0";
                     input_rot += "0";
-                 }
+                }
 
-                 if(j < terrainSize - 1)
-                 {
-                     input_type += ",";
-                     input_rot += ",";
-                 }
+                if(j < terrainSize - 1)
+                {
+                    input_type += ",";
+                    input_rot += ",";
+                }
             }
             dataType.WriteLine(input_type);
             data_rot.WriteLine(input_rot);
