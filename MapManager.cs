@@ -89,14 +89,17 @@ public class MapManager : MonoBehaviour
             for (int i = 0; i < blockCount; i++)
             {
                 for (int j = 0; j < blockCount; j++)
+                {
                     ObjectManager.deleteObject(i, j);
+                    ObjectManager.setSelectedObject(i, j, 0);
+                    GameObject Cube = GameObject.Find(i + "_" + j);
+                    Cube.GetComponent<MeshRenderer>().material = unSelected;
+                }
             }
 
             /* 선택된 오브젝트 제거 */
             craftingNum = 0;
-            preSelectedBlock.GetComponent<MeshRenderer>().material = unSelected;
             selectedObject.SetActive(false);
-
             /* Reset이 완료 되었으므로 false로 변환 */
             isReset = false;
         }
@@ -120,7 +123,7 @@ public class MapManager : MonoBehaviour
                     craftingNum = int.Parse(selectedName);
                     break;
                 case "Water":
-                    craftingNum = -1;
+                    craftingNum = 14;
                     return;
             }
             selectedObject.SetActive(true);
@@ -145,7 +148,7 @@ public class MapManager : MonoBehaviour
                 /* 이전 선택 블록 투명화 */
                 preSelectedBlock.GetComponent<MeshRenderer>().material = unSelected;
                 /* 해당 위치에 오브젝트가 있을 경우 빨간색을 표시 */
-                if (ObjectManager.getSelectedObject(x, z) != -2)
+                if (ObjectManager.getSelectedObject(x, z) != 0)
                     curSelectedBlock.GetComponent<MeshRenderer>().material = imPossible;
                 /* 그렇지 않을 경우 연두색을 표시 */
                 else
@@ -154,19 +157,19 @@ public class MapManager : MonoBehaviour
             }
 
             /* W 키를 누를 경우, 선택한 오브젝트 회전 */
-            if(Input.GetKey(KeyCode.W) && craftingNum != -1)
+            if(Input.GetKey(KeyCode.W) && craftingNum != 14)
                 selectedObject.transform.RotateAround( selectedObject.transform.position, Vector3.up, 
                     rotSpeed * Time.deltaTime);
 
             /* 왼쪽 마우스 버튼으로 선택한 오브젝트를 생성 */
-            if (Input.GetMouseButtonDown(0) && ObjectManager.getSelectedObject(x, z) == -2)
+            if (Input.GetMouseButtonDown(0) && ObjectManager.getSelectedObject(x, z) == 0)
             {
                 selectedNum = curSelectedBlock.name.Split('_');
                 x = int.Parse(selectedNum[0]);
                 z = int.Parse(selectedNum[1]);
                 isCrafting = true;
                 /* 물 이외의 오브젝트일 경우 */
-                if(craftingNum != -1)
+                if(craftingNum != 14)
                 {
                     ObjectManager.setObject(
                         Instantiate(selectedObject, curSelectedBlock.transform.position, selectedObject.transform.rotation), 
@@ -189,7 +192,7 @@ public class MapManager : MonoBehaviour
                 {
                     theTerrain.terrainData = 
                         generateTerrain(theTerrain.terrainData, x * 4, z * 4, 4, 4, 4);
-                    ObjectManager.setSelectedObject(x, z, -2);
+                    ObjectManager.setSelectedObject(x, z, 0);
                 }
             }
         }
@@ -232,11 +235,11 @@ public class MapManager : MonoBehaviour
 
     public static void readText()
     {
-        if (new FileInfo("map_data_rot.txt").Exists && new FileInfo("map_data_type.txt").Exists)
+        if (new FileInfo("map_data_rot.csv").Exists && new FileInfo("map_data_type.csv").Exists)
         {
             int terrainSize = ObjectManager.getTerrainSize();
-            StreamReader data_type = new StreamReader("map_data_type.txt", false);
-            StreamReader data_rot = new StreamReader("map_data_rot.txt", false);
+            StreamReader data_type = new StreamReader("map_data_type.csv", false);
+            StreamReader data_rot = new StreamReader("map_data_rot.csv", false);
             string[] line_type;
             string[] line_rot;
 
@@ -255,13 +258,8 @@ public class MapManager : MonoBehaviour
                     int x = i / 4, z = j / 4;
                     ObjectManager.setSelectedObject(x, z, types);
 
-                    if (types == -1)
-                    {
-                        theTerrain.terrainData =
-                           generateTerrain(theTerrain.terrainData, i, j, 4, 4, 0);
-                        continue;
-                    }
-                    else if (types < 11)
+                    
+                    if (types < 11)
                         clone = Instantiate(ObjectManager.getTree(line_type[j]),
                                         new Vector3(i+2, 4, j+2),
                                         Quaternion.Euler(0, float.Parse(line_rot[j]), 0));
@@ -269,11 +267,19 @@ public class MapManager : MonoBehaviour
                         clone = Instantiate(ObjectManager.getStone(line_type[j]),
                                         new Vector3(i+2, 4, j+2),
                                         Quaternion.Euler(0, float.Parse(line_rot[j]), 0));
-
+                    else if (types == 14)
+                    {
+                        theTerrain.terrainData =
+                           generateTerrain(theTerrain.terrainData, i, j, 4, 4, 0);
+                        continue;
+                    }
                     clone.SetActive(true);
                     ObjectManager.setObject(clone, x, z);
                 }
             }
+
+            data_rot.Close();
+            data_type.Close();
         }
     }
 }
