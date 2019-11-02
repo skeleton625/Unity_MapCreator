@@ -258,19 +258,18 @@ public class MapManager : MonoBehaviour
                     int x = i / 4, z = j / 4;
                     ObjectManager.setSelectedObject(x, z, types);
 
-                    
                     if (types < 11)
                         clone = Instantiate(ObjectManager.getTree(line_type[j]),
-                                        new Vector3(i+2, 4, j+2),
-                                        Quaternion.Euler(0, float.Parse(line_rot[j]), 0));
+                                        new Vector3(x * 4+2, 4,z * 4+2),
+                                        Quaternion.EulerAngles(0f, float.Parse(line_rot[j]), 0f));
                     else if(types < 14)
                         clone = Instantiate(ObjectManager.getStone(line_type[j]),
-                                        new Vector3(i+2, 4, j+2),
-                                        Quaternion.Euler(0, float.Parse(line_rot[j]), 0));
+                                        new Vector3(x * 4+2, 4, z * 4+2),
+                                        Quaternion.EulerAngles(0f, float.Parse(line_rot[j]), 0f));
                     else if (types == 14)
                     {
                         theTerrain.terrainData =
-                           generateTerrain(theTerrain.terrainData, i, j, 4, 4, 0);
+                           generateTerrain(theTerrain.terrainData, x * 4, z * 4, 4, 4, 0);
                         continue;
                     }
                     clone.SetActive(true);
