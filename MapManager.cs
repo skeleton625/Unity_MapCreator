@@ -260,11 +260,11 @@ public class MapManager : MonoBehaviour
 
                     if (types < 11)
                         clone = Instantiate(ObjectManager.getTree(line_type[j]),
-                                        new Vector3(x * 4+2, 4,z * 4+2),
+                                        new Vector3(i+2, 4,j+2),
                                         Quaternion.EulerAngles(0f, float.Parse(line_rot[j]), 0f));
                     else if(types < 14)
                         clone = Instantiate(ObjectManager.getStone(line_type[j]),
-                                        new Vector3(x * 4+2, 4, z * 4+2),
+                                        new Vector3(i+2, 4, j+2),
                                         Quaternion.EulerAngles(0f, float.Parse(line_rot[j]), 0f));
                     else if (types == 14)
                     {
